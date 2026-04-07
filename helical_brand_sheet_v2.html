@@ -1,0 +1,253 @@
+
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+:root {
+  --bg: #F0EDE6;
+  --bg2: #E4E0D8;
+  --ink: #0A0A0A;
+  --mid: #6B6866;
+  --rule: #C8C4BC;
+  --orange: #D95F0A;
+  --mono: 'Courier New', 'Courier', monospace;
+  --sans: 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif;
+}
+.page { background: var(--bg); color: var(--ink); font-family: var(--sans); }
+
+.cover { background: var(--ink); padding: 52px 48px 48px; display: grid; grid-template-columns: 1fr auto; align-items: end; gap: 32px; border-bottom: 1px solid #222; }
+.cover-wordmark { font-size: 11px; letter-spacing: 0.22em; color: #888; font-family: var(--sans); text-transform: lowercase; margin-bottom: 40px; display: flex; align-items: center; gap: 12px; }
+.cover-dot { width: 4px; height: 4px; background: var(--orange); border-radius: 50%; }
+.cover-title { font-size: 52px; font-weight: 400; line-height: 0.95; color: #F0EDE6; letter-spacing: -0.02em; font-family: var(--sans); }
+.cover-title span { color: var(--orange); }
+.cover-meta { font-family: var(--mono); font-size: 10px; color: #555; line-height: 2; text-align: right; }
+
+.stripe { background: var(--orange); padding: 9px 48px; display: flex; gap: 0; }
+.stripe-item { font-size: 9px; letter-spacing: 0.2em; color: #F0EDE6; text-transform: lowercase; font-family: var(--sans); flex: 1; }
+
+.block { padding: 40px 48px; border-bottom: 1px solid var(--rule); }
+.block-label { font-family: var(--mono); font-size: 9px; color: var(--mid); letter-spacing: 0.18em; text-transform: lowercase; margin-bottom: 28px; padding-bottom: 10px; border-bottom: 1px solid var(--rule); display: flex; align-items: center; gap: 8px; }
+.num { color: var(--orange); margin-right: 4px; }
+
+.palette-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 0; height: 80px; }
+.sw { border-right: 1px solid var(--bg); }
+.sw:last-child { border-right: none; }
+.palette-labels { display: grid; grid-template-columns: repeat(6, 1fr); margin-top: 10px; }
+.pl { font-family: var(--mono); font-size: 8px; color: var(--mid); line-height: 1.5; }
+
+.type-table { width: 100%; border-collapse: collapse; }
+.type-table tr { border-bottom: 1px solid var(--rule); }
+.type-table td { padding: 14px 0; vertical-align: middle; }
+.td-spec { font-family: var(--mono); font-size: 9px; color: var(--mid); width: 180px; line-height: 1.7; }
+.td-sample-xl { font-size: 36px; font-weight: 400; letter-spacing: -0.01em; color: var(--ink); text-transform: lowercase; }
+.td-sample-lg { font-size: 22px; font-weight: 400; letter-spacing: 0.01em; color: var(--ink); text-transform: lowercase; }
+.td-sample-mono { font-family: var(--mono); font-size: 13px; color: var(--ink); }
+.td-sample-label { font-family: var(--sans); font-size: 9px; letter-spacing: 0.2em; color: var(--mid); text-transform: lowercase; }
+
+.mark-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px; background: var(--rule); }
+.mark-cell { background: var(--bg); padding: 28px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 14px; }
+.mark-cell-dark { background: var(--ink); padding: 28px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 14px; }
+.mark-cell-orange { background: var(--orange); padding: 28px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 14px; }
+.mc-label { font-family: var(--mono); font-size: 8px; color: var(--mid); letter-spacing: 0.12em; }
+.mc-label-light { font-family: var(--mono); font-size: 8px; color: rgba(240,237,230,0.4); letter-spacing: 0.12em; }
+
+.principles-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: var(--rule); }
+.principle { background: var(--bg); padding: 24px 22px; }
+.p-num { font-family: var(--mono); font-size: 9px; color: var(--orange); margin-bottom: 10px; display: block; }
+.p-title { font-size: 14px; font-weight: 400; letter-spacing: -0.01em; color: var(--ink); text-transform: lowercase; margin-bottom: 8px; }
+.p-body { font-family: var(--mono); font-size: 9px; color: var(--mid); line-height: 1.75; }
+
+.voice-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0; background: var(--rule); }
+.voice-col { background: var(--bg); padding: 28px 32px; }
+.voice-col-dark { background: var(--ink); padding: 28px 32px; }
+.v-head { font-family: var(--mono); font-size: 9px; letter-spacing: 0.15em; margin-bottom: 20px; padding-bottom: 10px; border-bottom: 1px solid var(--rule); }
+.v-head-light { font-family: var(--mono); font-size: 9px; letter-spacing: 0.15em; color: #444; margin-bottom: 20px; padding-bottom: 10px; border-bottom: 1px solid #222; }
+.v-row { padding: 9px 0; border-bottom: 1px solid var(--rule); font-family: var(--mono); font-size: 10px; color: var(--mid); line-height: 1.5; }
+.v-row-light { padding: 9px 0; border-bottom: 1px solid #1A1A1A; font-family: var(--mono); font-size: 10px; color: #444; line-height: 1.5; }
+.strike { text-decoration: line-through; opacity: 0.5; }
+.v-new { color: var(--orange); }
+
+.copy-block { background: var(--ink); padding: 48px; }
+.copy-eyebrow { font-family: var(--mono); font-size: 9px; color: #555; letter-spacing: 0.16em; margin-bottom: 24px; text-transform: lowercase; }
+.copy-headline { font-size: 38px; font-weight: 400; color: #F0EDE6; letter-spacing: -0.02em; line-height: 1.05; text-transform: lowercase; margin-bottom: 20px; }
+.copy-body { font-family: var(--mono); font-size: 11px; color: #666; line-height: 1.9; max-width: 480px; margin-bottom: 32px; }
+.copy-cta { display: inline-flex; align-items: center; gap: 10px; font-family: var(--mono); font-size: 10px; color: var(--orange); letter-spacing: 0.1em; border-bottom: 1px solid var(--orange); padding-bottom: 2px; }
+
+.footer-bar { background: var(--bg2); padding: 16px 48px; display: flex; justify-content: space-between; align-items: center; }
+.footer-l { font-family: var(--mono); font-size: 8px; color: var(--mid); letter-spacing: 0.12em; display: flex; align-items: center; gap: 12px; }
+.footer-r { font-family: var(--mono); font-size: 8px; color: var(--rule); letter-spacing: 0.1em; }
+</style>
+
+<div class="page">
+
+  <div class="cover">
+    <div>
+      <div class="cover-wordmark">
+        <svg width="14" height="16" viewBox="0 0 100 110" fill="none"><path d="M58 14C80 28 82 62 62 80C54 87 44 90 38 86C32 82 30 74 34 66C38 56 48 48 54 38C60 28 60 18 58 14Z" fill="#F0EDE6"/><path d="M44 26C66 40 68 74 48 92C40 99 30 102 24 98C18 94 16 86 20 78C24 68 34 60 40 50C46 40 46 30 44 26Z" fill="rgba(240,237,230,0.55)"/><path d="M30 40C52 54 54 88 34 106C26 113 16 116 10 112C4 108 2 100 6 92C10 82 20 74 26 64C32 54 32 44 30 40Z" fill="rgba(240,237,230,0.25)"/></svg>
+        <div class="cover-dot"></div>
+        helical — brand system v1.0
+      </div>
+      <div class="cover-title">built<br>for the<br><span>work.</span></div>
+    </div>
+    <div class="cover-meta">
+      doc: HEL-BRAND-001<br>
+      rev: 2026.04<br>
+      status: draft<br>
+      ——————<br>
+      not a platform.<br>not a pipeline.<br>a practice.
+    </div>
+  </div>
+
+  <div class="stripe">
+    <div class="stripe-item">precision</div>
+    <div class="stripe-item">utility</div>
+    <div class="stripe-item">craft</div>
+    <div class="stripe-item">systems</div>
+    <div class="stripe-item">endurance</div>
+  </div>
+
+  <div class="block">
+    <div class="block-label"><span class="num">01</span> colour system</div>
+    <div class="palette-grid">
+      <div class="sw" style="background:#0A0A0A;"></div>
+      <div class="sw" style="background:#1C1C1C;"></div>
+      <div class="sw" style="background:#D95F0A;"></div>
+      <div class="sw" style="background:#6B6866;"></div>
+      <div class="sw" style="background:#E4E0D8;"></div>
+      <div class="sw" style="background:#F0EDE6;"></div>
+    </div>
+    <div class="palette-labels">
+      <div class="pl">ink<br>#0A0A0A</div>
+      <div class="pl">carbon<br>#1C1C1C</div>
+      <div class="pl">signal<br>#D95F0A</div>
+      <div class="pl">mid<br>#6B6866</div>
+      <div class="pl">field<br>#E4E0D8</div>
+      <div class="pl">paper<br>#F0EDE6</div>
+    </div>
+  </div>
+
+  <div class="block">
+    <div class="block-label"><span class="num">02</span> typography</div>
+    <table class="type-table">
+      <tr>
+        <td class="td-spec">helvetica neue<br>400 / display<br>-0.02em tracking</td>
+        <td><div class="td-sample-xl">helical ai</div></td>
+      </tr>
+      <tr>
+        <td class="td-spec">helvetica neue<br>400 / subhead<br>0.01em tracking</td>
+        <td><div class="td-sample-lg">built for the work, not the pitch</div></td>
+      </tr>
+      <tr>
+        <td class="td-spec">courier new<br>400 / mono<br>technical, ui, labels</td>
+        <td><div class="td-sample-mono">$ helical build --env production</div></td>
+      </tr>
+      <tr>
+        <td class="td-spec">helvetica neue<br>400 / label<br>0.20em tracked low</td>
+        <td><div class="td-sample-label">intelligence for makers — est. 2025</div></td>
+      </tr>
+    </table>
+  </div>
+
+  <div class="block" style="padding-bottom:0; padding-left:0; padding-right:0; padding-top:40px;">
+    <div class="block-label" style="padding-left:48px; padding-right:48px;"><span class="num">03</span> mark — usage contexts</div>
+    <div class="mark-grid">
+      <div class="mark-cell">
+        <svg width="44" height="50" viewBox="0 0 100 110" fill="none"><path d="M58 14C80 28 82 62 62 80C54 87 44 90 38 86C32 82 30 74 34 66C38 56 48 48 54 38C60 28 60 18 58 14Z" fill="#0A0A0A"/><path d="M44 26C66 40 68 74 48 92C40 99 30 102 24 98C18 94 16 86 20 78C24 68 34 60 40 50C46 40 46 30 44 26Z" fill="rgba(10,10,10,0.5)"/><path d="M30 40C52 54 54 88 34 106C26 113 16 116 10 112C4 108 2 100 6 92C10 82 20 74 26 64C32 54 32 44 30 40Z" fill="rgba(10,10,10,0.22)"/></svg>
+        <div class="mc-label">ink / paper</div>
+      </div>
+      <div class="mark-cell-dark">
+        <svg width="44" height="50" viewBox="0 0 100 110" fill="none"><path d="M58 14C80 28 82 62 62 80C54 87 44 90 38 86C32 82 30 74 34 66C38 56 48 48 54 38C60 28 60 18 58 14Z" fill="#F0EDE6"/><path d="M44 26C66 40 68 74 48 92C40 99 30 102 24 98C18 94 16 86 20 78C24 68 34 60 40 50C46 40 46 30 44 26Z" fill="rgba(240,237,230,0.55)"/><path d="M30 40C52 54 54 88 34 106C26 113 16 116 10 112C4 108 2 100 6 92C10 82 20 74 26 64C32 54 32 44 30 40Z" fill="rgba(240,237,230,0.25)"/></svg>
+        <div class="mc-label-light">paper / ink</div>
+      </div>
+      <div class="mark-cell-orange">
+        <svg width="44" height="50" viewBox="0 0 100 110" fill="none"><path d="M58 14C80 28 82 62 62 80C54 87 44 90 38 86C32 82 30 74 34 66C38 56 48 48 54 38C60 28 60 18 58 14Z" fill="#F0EDE6"/><path d="M44 26C66 40 68 74 48 92C40 99 30 102 24 98C18 94 16 86 20 78C24 68 34 60 40 50C46 40 46 30 44 26Z" fill="rgba(240,237,230,0.6)"/><path d="M30 40C52 54 54 88 34 106C26 113 16 116 10 112C4 108 2 100 6 92C10 82 20 74 26 64C32 54 32 44 30 40Z" fill="rgba(240,237,230,0.28)"/></svg>
+        <div class="mc-label-light">paper / signal</div>
+      </div>
+      <div class="mark-cell" style="background:var(--bg2);">
+        <div style="display:flex;align-items:center;gap:10px;">
+          <svg width="22" height="25" viewBox="0 0 100 110" fill="none"><path d="M58 14C80 28 82 62 62 80C54 87 44 90 38 86C32 82 30 74 34 66C38 56 48 48 54 38C60 28 60 18 58 14Z" fill="#0A0A0A"/><path d="M44 26C66 40 68 74 48 92C40 99 30 102 24 98C18 94 16 86 20 78C24 68 34 60 40 50C46 40 46 30 44 26Z" fill="rgba(10,10,10,0.45)"/><path d="M30 40C52 54 54 88 34 106C26 113 16 116 10 112C4 108 2 100 6 92C10 82 20 74 26 64C32 54 32 44 30 40Z" fill="rgba(10,10,10,0.2)"/></svg>
+          <div style="font-size:13px;letter-spacing:0.14em;color:var(--ink);text-transform:lowercase;font-family:var(--sans);">helical</div>
+        </div>
+        <div class="mc-label">wordmark lockup</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="block" style="padding-left:0;padding-right:0;padding-bottom:0;">
+    <div class="block-label" style="padding-left:48px;"><span class="num">04</span> design principles</div>
+    <div class="principles-grid">
+      <div class="principle">
+        <span class="p-num">p.01</span>
+        <div class="p-title">function over ornament</div>
+        <div class="p-body">every element must earn its place. decoration is a failure of confidence. if it doesn't carry meaning, remove it.</div>
+      </div>
+      <div class="principle">
+        <span class="p-num">p.02</span>
+        <div class="p-title">lowercase as posture</div>
+        <div class="p-body">we don't shout. all-caps is for people who don't trust their ideas. lowercase says: we already know what we're doing.</div>
+      </div>
+      <div class="principle">
+        <span class="p-num">p.03</span>
+        <div class="p-title">the grid is law</div>
+        <div class="p-body">alignment is respect for the reader. consistent spacing signals that someone was paying attention when this was made.</div>
+      </div>
+      <div class="principle">
+        <span class="p-num">p.04</span>
+        <div class="p-title">monospace for the machine</div>
+        <div class="p-body">courier for anything technical. it signals honesty — that the interface and the system beneath it are the same thing.</div>
+      </div>
+      <div class="principle">
+        <span class="p-num">p.05</span>
+        <div class="p-title">signal orange, used sparingly</div>
+        <div class="p-body">one accent, used once per view. like a warning light on a control panel — it works because it's rare.</div>
+      </div>
+      <div class="principle">
+        <span class="p-num">p.06</span>
+        <div class="p-title">built to last</div>
+        <div class="p-body">no trend-chasing. this system should read exactly the same in 2035. teenage engineering looked the same in 2012.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="block" style="padding-left:0;padding-right:0;padding-bottom:0;">
+    <div class="block-label" style="padding-left:48px;"><span class="num">05</span> voice system</div>
+    <div class="voice-grid">
+      <div class="voice-col">
+        <div class="v-head" style="color:var(--mid);">× don't say this</div>
+        <div class="v-row"><span class="strike">ai-powered workflow automation</span></div>
+        <div class="v-row"><span class="strike">seamless integration layer</span></div>
+        <div class="v-row"><span class="strike">scale your operations intelligently</span></div>
+        <div class="v-row"><span class="strike">deploy in minutes</span></div>
+        <div class="v-row"><span class="strike">unlock the power of ai</span></div>
+        <div class="v-row"><span class="strike">next-generation platform</span></div>
+      </div>
+      <div class="voice-col-dark">
+        <div class="v-head-light"><span style="color:var(--orange);">→</span> say this instead</div>
+        <div class="v-row-light"><span class="v-new">tools that fit how you build</span></div>
+        <div class="v-row-light"><span class="v-new">works with what you already have</span></div>
+        <div class="v-row-light"><span class="v-new">grows with the craft</span></div>
+        <div class="v-row-light"><span class="v-new">made once. trusted for years.</span></div>
+        <div class="v-row-light"><span class="v-new">intelligence without the noise</span></div>
+        <div class="v-row-light"><span class="v-new">built for the work, not the pitch</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="copy-block">
+    <div class="copy-eyebrow">// sample hero copy — helical.ai</div>
+    <div class="copy-headline">intelligence<br>for people<br>who build.</div>
+    <div class="copy-body">helical is not a platform. it doesn't have a dashboard tour or a 14-day trial. it's a set of tools, built carefully, for people who already know what they're doing and just want the machine to keep up.</div>
+    <div class="copy-cta">read the docs →</div>
+  </div>
+
+  <div class="footer-bar">
+    <div class="footer-l">
+      <svg width="10" height="11" viewBox="0 0 100 110" fill="none"><path d="M58 14C80 28 82 62 62 80C54 87 44 90 38 86C32 82 30 74 34 66C38 56 48 48 54 38C60 28 60 18 58 14Z" fill="#6B6866"/><path d="M44 26C66 40 68 74 48 92C40 99 30 102 24 98C18 94 16 86 20 78C24 68 34 60 40 50C46 40 46 30 44 26Z" fill="rgba(107,104,102,0.5)"/></svg>
+      helical — brand system
+      <span style="color:var(--rule);">·</span>
+      doc HEL-BRAND-001
+      <span style="color:var(--rule);">·</span>
+      rev 2026.04
+    </div>
+    <div class="footer-r">confidential — internal use</div>
+  </div>
+
+</div>

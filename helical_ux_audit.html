@@ -1,0 +1,378 @@
+
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+:root {
+  --ink: #0A0A0A;
+  --bg: #F0EDE6;
+  --bg2: #E4E0D8;
+  --mid: #6B6866;
+  --rule: #C8C4BC;
+  --orange: #D95F0A;
+  --red: #C0392B;
+  --green: #2E7D52;
+  --mono: 'Courier New', monospace;
+  --sans: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+}
+.wrap { background: var(--bg); font-family: var(--sans); color: var(--ink); }
+.header { background: var(--ink); padding: 32px 40px; display: flex; justify-content: space-between; align-items: flex-end; }
+.h-left { }
+.h-eyebrow { font-family: var(--mono); font-size: 9px; color: #555; letter-spacing: 0.18em; margin-bottom: 10px; }
+.h-title { font-size: 28px; font-weight: 400; color: #F0EDE6; letter-spacing: -0.02em; line-height: 1.05; }
+.h-right { font-family: var(--mono); font-size: 9px; color: #444; line-height: 2; text-align: right; }
+.score-bar { background: var(--bg2); padding: 20px 40px; display: flex; gap: 0; border-bottom: 1px solid var(--rule); }
+.score-item { flex: 1; padding: 0 20px 0 0; border-right: 1px solid var(--rule); margin-right: 20px; }
+.score-item:last-child { border-right: none; margin-right: 0; }
+.s-label { font-family: var(--mono); font-size: 8px; color: var(--mid); letter-spacing: 0.15em; margin-bottom: 6px; }
+.s-val { font-size: 22px; font-weight: 400; letter-spacing: -0.02em; }
+.s-sub { font-family: var(--mono); font-size: 8px; color: var(--mid); margin-top: 3px; }
+.section { padding: 32px 40px; border-bottom: 1px solid var(--rule); }
+.sec-label { font-family: var(--mono); font-size: 9px; color: var(--orange); letter-spacing: 0.18em; margin-bottom: 20px; padding-bottom: 10px; border-bottom: 1px solid var(--rule); }
+.issue-row { display: grid; grid-template-columns: 80px 1fr 120px; gap: 16px; align-items: start; padding: 12px 0; border-bottom: 1px solid var(--rule); }
+.issue-row:last-child { border-bottom: none; }
+.sev { font-family: var(--mono); font-size: 8px; letter-spacing: 0.1em; padding: 3px 8px; border-radius: 2px; text-align: center; }
+.sev-crit { background: #FDE8E6; color: var(--red); }
+.sev-med  { background: #FAEEDA; color: #854F0B; }
+.sev-low  { background: #EAF3DE; color: var(--green); }
+.issue-body { }
+.issue-title { font-size: 12px; font-weight: 400; color: var(--ink); margin-bottom: 4px; letter-spacing: -0.01em; }
+.issue-desc { font-family: var(--mono); font-size: 9px; color: var(--mid); line-height: 1.7; }
+.fix-label { font-family: var(--mono); font-size: 8px; color: var(--mid); letter-spacing: 0.1em; }
+.fix-val { font-family: var(--mono); font-size: 9px; color: var(--ink); margin-top: 4px; line-height: 1.6; }
+.good-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1px; background: var(--rule); }
+.good-cell { background: var(--bg); padding: 18px 20px; }
+.good-title { font-size: 12px; color: var(--ink); margin-bottom: 4px; display: flex; align-items: center; gap: 8px; }
+.dot-green { width: 6px; height: 6px; border-radius: 50%; background: var(--green); flex-shrink: 0; }
+.dot-orange { width: 6px; height: 6px; border-radius: 50%; background: var(--orange); flex-shrink: 0; }
+.good-desc { font-family: var(--mono); font-size: 9px; color: var(--mid); line-height: 1.7; }
+.plan-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: var(--rule); }
+.plan-cell { background: var(--bg); padding: 20px; }
+.plan-num { font-family: var(--mono); font-size: 9px; color: var(--orange); margin-bottom: 8px; }
+.plan-title { font-size: 13px; color: var(--ink); letter-spacing: -0.01em; margin-bottom: 10px; line-height: 1.3; }
+.plan-item { font-family: var(--mono); font-size: 9px; color: var(--mid); line-height: 2; display: flex; gap: 6px; }
+.plan-arrow { color: var(--orange); flex-shrink: 0; }
+.bench-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1px; background: var(--rule); }
+.bench-cell { background: var(--bg); padding: 18px 20px; }
+.bench-site { font-family: var(--mono); font-size: 8px; color: var(--orange); letter-spacing: 0.15em; margin-bottom: 10px; }
+.bench-title { font-size: 11px; color: var(--ink); margin-bottom: 6px; }
+.bench-desc { font-family: var(--mono); font-size: 9px; color: var(--mid); line-height: 1.7; }
+.bench-verdict { font-family: var(--mono); font-size: 8px; margin-top: 8px; padding: 3px 6px; border-radius: 2px; display: inline-block; }
+.v-steal { background: #EAF3DE; color: var(--green); }
+.v-gap { background: #FDE8E6; color: var(--red); }
+</style>
+
+<div class="wrap">
+
+<div class="header">
+  <div class="h-left">
+    <div class="h-eyebrow">helical — ux audit report — HEL-AUDIT-001</div>
+    <div class="h-title">design &amp; copy<br>evaluation</div>
+  </div>
+  <div class="h-right">
+    screens reviewed: 1<br>
+    heuristics applied: nielsen × 10<br>
+    benchmarks: fly.io · railway · te<br>
+    rev: 2026.04
+  </div>
+</div>
+
+<div class="score-bar">
+  <div class="score-item">
+    <div class="s-label">overall score</div>
+    <div class="s-val" style="color:var(--orange);">6.4<span style="font-size:13px;color:var(--mid);">/10</span></div>
+    <div class="s-sub">solid foundation, fixable gaps</div>
+  </div>
+  <div class="score-item">
+    <div class="s-label">visual design</div>
+    <div class="s-val">7.2<span style="font-size:13px;color:var(--mid);">/10</span></div>
+    <div class="s-sub">direction is right, execution uneven</div>
+  </div>
+  <div class="score-item">
+    <div class="s-label">copy &amp; messaging</div>
+    <div class="s-val">6.8<span style="font-size:13px;color:var(--mid);">/10</span></div>
+    <div class="s-sub">strong headlines, weak body</div>
+  </div>
+  <div class="score-item">
+    <div class="s-label">ux / conversion</div>
+    <div class="s-val">5.8<span style="font-size:13px;color:var(--mid);">/10</span></div>
+    <div class="s-sub">cta clarity needs work</div>
+  </div>
+  <div class="score-item">
+    <div class="s-label">brand alignment</div>
+    <div class="s-val">7.0<span style="font-size:13px;color:var(--mid);">/10</span></div>
+    <div class="s-sub">close, a few drift points</div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="sec-label">01 — critical issues (fix before launch)</div>
+
+  <div class="issue-row">
+    <div class="sev sev-crit">critical</div>
+    <div class="issue-body">
+      <div class="issue-title">primary CTA is buried and undersized in the nav</div>
+      <div class="issue-desc">the "fill out intake form" button in the nav is orange but sits at the same visual weight as the nav links. at 100% zoom it doesn't read as the primary action. nielsen #6 — recognition over recall: the most important action must be unmissable without hunting. reference: fly.io and railway both make their primary CTA the only colored element in the nav at 2× the text size of nav links.</div>
+    </div>
+    <div>
+      <div class="fix-label">fix</div>
+      <div class="fix-val">increase button padding, add solid background fill, ensure it's visually louder than every other nav element.</div>
+    </div>
+  </div>
+
+  <div class="issue-row">
+    <div class="sev sev-crit">critical</div>
+    <div class="issue-body">
+      <div class="issue-title">the hero has two competing visual anchors</div>
+      <div class="issue-desc">the large black headline on the left and the helix mark on the right are fighting for dominance. the eye doesn't know where to go first. on fly.io and railway the hero has one dominant element — the headline — and everything else is subordinate. the mark is too large relative to the type here.</div>
+    </div>
+    <div>
+      <div class="fix-label">fix</div>
+      <div class="fix-val">reduce mark to 60% current size. let the headline be the dominant element. mark as supporting visual, not co-headline.</div>
+    </div>
+  </div>
+
+  <div class="issue-row">
+    <div class="sev sev-crit">critical</div>
+    <div class="issue-body">
+      <div class="issue-title">no single clear CTA below the hero fold</div>
+      <div class="issue-desc">after the hero, the page has process → products → comparison → form → pricing → closing CTA. that's six sections before the next hard conversion moment. nielsen #7 — flexibility and efficiency: users who are convinced early have nowhere to convert. railway and fly.io place a secondary CTA after every 2 sections maximum.</div>
+    </div>
+    <div>
+      <div class="fix-label">fix</div>
+      <div class="fix-val">add inline CTA after the process section and after the comparison section. "start your project →" in orange text only.</div>
+    </div>
+  </div>
+
+  <div class="issue-row">
+    <div class="sev sev-crit">critical</div>
+    <div class="issue-body">
+      <div class="issue-title">products section introduces scope creep in messaging</div>
+      <div class="issue-desc">"maintenance &amp; hosting" and "full-service development" as product categories contradict the agency positioning. you've told the user this is a fast UX delivery service — now you're also a dev shop and a hosting provider? this violates the single positioning principle and will confuse your primary target (founders who need UX work done fast). anthropic's site never wavers from its core message.</div>
+    </div>
+    <div>
+      <div class="fix-label">fix</div>
+      <div class="fix-val">cut or rename these. focus on UX deliverables only. hosting/dev can be an "ask us" item, not a featured product.</div>
+    </div>
+  </div>
+
+</div>
+
+<div class="section">
+  <div class="sec-label">02 — medium issues (fix in v1.1)</div>
+
+  <div class="issue-row">
+    <div class="sev sev-med">medium</div>
+    <div class="issue-body">
+      <div class="issue-title">the comparison section copy is weak on the helical side</div>
+      <div class="issue-desc">"async progress, zero fluff" is vague. the traditional agency column is specific ("2-week discovery process", "6-week delivery timeline") which makes it land. but the helical column responds with abstract benefits rather than matching specifics. asymmetric specificity makes the strong side look weaker.</div>
+    </div>
+    <div>
+      <div class="fix-label">fix</div>
+      <div class="fix-val">match specificity: "intake form, once" → "delivery in 2–5 days" → "figma files, same day". concrete vs concrete.</div>
+    </div>
+  </div>
+
+  <div class="issue-row">
+    <div class="sev sev-med">medium</div>
+    <div class="issue-body">
+      <div class="issue-title">icons in the products section break the brand system</div>
+      <div class="issue-desc">the outlined icon style (computer, grid, code brackets, leaf) is generic UI kit energy — exactly what teenage engineering and fly.io avoid. TE uses no icons at all. railway uses simple geometric shapes or nothing. these icons signal "built in webflow template" not "considered craft".</div>
+    </div>
+    <div>
+      <div class="fix-label">fix</div>
+      <div class="fix-val">remove icons entirely. replace with numbered labels (01, 02, 03, 04) in courier new orange. the type is the design.</div>
+    </div>
+  </div>
+
+  <div class="issue-row">
+    <div class="sev sev-med">medium</div>
+    <div class="issue-body">
+      <div class="issue-title">trust bar companies include direct competitors / category overlaps</div>
+      <div class="issue-desc">listing "stripe, vercel, linear, anthropic, figma" as clients positions you alongside the tools your clients use — not the teams that use them. your target client is a startup that uses these tools. listing the tools themselves as "trusted by" is confusing and unverifiable.</div>
+    </div>
+    <div>
+      <div class="fix-label">fix</div>
+      <div class="fix-val">replace with real clients or remove entirely until you have them. a strong "no logo wall" position is more credible than a fake one.</div>
+    </div>
+  </div>
+
+  <div class="issue-row">
+    <div class="sev sev-med">medium</div>
+    <div class="issue-body">
+      <div class="issue-title">pricing section is missing the primary differentiator</div>
+      <div class="issue-desc">the pricing tiers list features but don't anchor on the speed value prop — which is the whole reason someone chooses helical over a traditional agency. "delivery in 2-3 days" appears briefly but isn't the lead. for a prospect comparing you to a $15k/6-week agency, the timeline is the headline in this section.</div>
+    </div>
+    <div>
+      <div class="fix-label">fix</div>
+      <div class="fix-val">add delivery timeline as the first visible spec under each tier. "2–3 days" in orange before the feature list.</div>
+    </div>
+  </div>
+
+  <div class="issue-row">
+    <div class="sev sev-med">medium</div>
+    <div class="issue-body">
+      <div class="issue-title">section spacing is inconsistent — some sections feel cramped</div>
+      <div class="issue-desc">the process section and comparison section have noticeably different vertical rhythm. fly.io uses a strict 80px section padding rule — every section breathes identically, which makes the page feel systematic. here some sections feel rushed and others over-padded.</div>
+    </div>
+    <div>
+      <div class="fix-label">fix</div>
+      <div class="fix-val">establish a strict 80px top/bottom padding on every section. no exceptions. the grid is law.</div>
+    </div>
+  </div>
+
+</div>
+
+<div class="section">
+  <div class="sec-label">03 — low issues (polish pass)</div>
+
+  <div class="issue-row">
+    <div class="sev sev-low">low</div>
+    <div class="issue-body">
+      <div class="issue-title">the helix mark in the hero sits inside a circle that's too light</div>
+      <div class="issue-desc">the cream circle background is so close to the page background that the container disappears. the mark floats without a clear frame. in the icon context this works — here it just looks unfinished.</div>
+    </div>
+    <div>
+      <div class="fix-label">fix</div>
+      <div class="fix-val">either remove the circle container entirely (mark on page bg) or darken it to #E4E0D8 so it reads as a deliberate surface.</div>
+    </div>
+  </div>
+
+  <div class="issue-row">
+    <div class="sev sev-low">low</div>
+    <div class="issue-body">
+      <div class="issue-title">form preview in the intake section has a "fill in project scope" button label</div>
+      <div class="issue-desc">this CTA label is passive. it doesn't tell the user what happens next or what they get. nielsen #4 — consistency and standards: CTAs should use action-outcome framing.</div>
+    </div>
+    <div>
+      <div class="fix-label">fix</div>
+      <div class="fix-val">"get my scope →" or "start the intake →" — active, outcome-oriented.</div>
+    </div>
+  </div>
+
+  <div class="issue-row">
+    <div class="sev sev-low">low</div>
+    <div class="issue-body">
+      <div class="issue-title">footer is undersized relative to the rest of the page</div>
+      <div class="issue-desc">the footer copy and links are difficult to read at this scale and feel like they were added last. anthropic and railway both treat the footer as part of the brand — not an afterthought.</div>
+    </div>
+    <div>
+      <div class="fix-label">fix</div>
+      <div class="fix-val">increase footer to at least 160px height. add the "we use ai to move faster, not to think less." line. it's the most important sentence.</div>
+    </div>
+  </div>
+
+</div>
+
+<div class="section">
+  <div class="sec-label">04 — what's working</div>
+  <div class="good-grid">
+    <div class="good-cell">
+      <div class="good-title"><div class="dot-green"></div>headline copy is strong throughout</div>
+      <div class="good-desc">"your next ux deliverable. finished before the follow-up meeting." — this is excellent. specific, resonant, positions against a real pain point. the best headline on the page by a distance. keep it.</div>
+    </div>
+    <div class="good-cell">
+      <div class="good-title"><div class="dot-green"></div>color system is disciplined</div>
+      <div class="good-desc">orange accent appears rarely and always with purpose. the ink/paper palette is consistent. no rogue blues or purples. this is better restraint than most first-pass designs show.</div>
+    </div>
+    <div class="good-cell">
+      <div class="good-title"><div class="dot-green"></div>the comparison section structure is right</div>
+      <div class="good-desc">dark background, two-column before/after is the correct approach. the visual logic is sound — traditional agency = old/bad, helical = new/good. just needs sharper copy on the right side.</div>
+    </div>
+    <div class="good-cell">
+      <div class="good-title"><div class="dot-green"></div>intake form preview is a smart conversion element</div>
+      <div class="good-desc">showing the form fields inline as a preview is a genuinely good UX decision. it demystifies the process and reduces friction before clicking. this is differentiated — most agencies don't do this.</div>
+    </div>
+    <div class="good-cell">
+      <div class="good-title"><div class="dot-green"></div>typography scale feels right at a page level</div>
+      <div class="good-desc">the hierarchy between headline sizes, subheads, and body is well-calibrated. the heavy-weight headline against lighter body weight creates the right visual rhythm.</div>
+    </div>
+    <div class="good-cell">
+      <div class="good-title"><div class="dot-orange"></div>the closing CTA section is clean</div>
+      <div class="good-desc">"fill out the form. get a scope by tomorrow." — concrete promise, specific timeline. the only suggestion is making the orange button fill solid rather than outline at this stage of the page — the user needs a clear final action.</div>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="sec-label">05 — benchmark gaps (vs fly.io · railway · teenage engineering)</div>
+  <div class="bench-grid">
+    <div class="bench-cell">
+      <div class="bench-site">fly.io</div>
+      <div class="bench-title">terminal density + code presence</div>
+      <div class="bench-desc">fly.io's hero has a terminal block that's the dominant right-side element. it establishes "this is for builders" immediately. helical's helix mark is beautiful but abstract — it doesn't signal "we work with technical founders".</div>
+      <div class="bench-verdict v-gap">gap — add terminal or code element to hero</div>
+    </div>
+    <div class="bench-cell">
+      <div class="bench-site">railway</div>
+      <div class="bench-title">section numbering discipline</div>
+      <div class="bench-desc">railway numbers every section (01, 02, 03) systematically, creating a sense that the page was designed as a system, not assembled. helical does this inconsistently — some sections have numbers, some don't.</div>
+      <div class="bench-verdict v-gap">gap — number every section consistently</div>
+    </div>
+    <div class="bench-cell">
+      <div class="bench-site">teenage engineering</div>
+      <div class="bench-title">no icons, type does all the work</div>
+      <div class="bench-desc">TE has zero decorative icons. every visual element is either a product photo or pure typography. helical's UI-kit icons in the products section are the single biggest aesthetic departure from the TE/fly.io reference direction.</div>
+      <div class="bench-verdict v-gap">gap — remove icons, use numbered labels</div>
+    </div>
+    <div class="bench-cell">
+      <div class="bench-site">anthropic</div>
+      <div class="bench-title">whitespace as confidence signal</div>
+      <div class="bench-desc">anthropic's sections are spacious to the point of feeling academic. that spaciousness communicates "we don't need to cram in more information." helical's middle sections feel slightly cramped by comparison — the process and products sections especially.</div>
+      <div class="bench-verdict v-gap">gap — increase section padding 20–30%</div>
+    </div>
+    <div class="bench-cell">
+      <div class="bench-site">replit</div>
+      <div class="bench-title">single clear primary action</div>
+      <div class="bench-desc">replit's entire page points to one action. every CTA says the same thing in slightly different words. helical has "fill out intake form", "see how it works", "get started", "start here", "talk to us" — too many different labels for what is essentially one conversion path.</div>
+      <div class="bench-verdict v-gap">gap — unify CTA language to one phrase</div>
+    </div>
+    <div class="bench-cell">
+      <div class="bench-site">all five</div>
+      <div class="bench-title">monospace as brand material</div>
+      <div class="bench-desc">all five reference sites use monospace type as a design element — not just for code. helical has this in the right places but the section labels and eyebrows inconsistently switch between sans and mono.</div>
+      <div class="bench-verdict v-steal">close — audit and standardise mono usage</div>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="sec-label">06 — prioritised fix plan</div>
+  <div class="plan-grid">
+    <div class="plan-cell">
+      <div class="plan-num">wave 1 — this week</div>
+      <div class="plan-title">conversion &amp; clarity</div>
+      <div class="plan-item"><span class="plan-arrow">→</span>unify all CTAs to "start your project →"</div>
+      <div class="plan-item"><span class="plan-arrow">→</span>add inline CTAs after process + comparison sections</div>
+      <div class="plan-item"><span class="plan-arrow">→</span>reduce helix mark size in hero by 40%</div>
+      <div class="plan-item"><span class="plan-arrow">→</span>strengthen nav CTA button weight</div>
+      <div class="plan-item"><span class="plan-arrow">→</span>cut or rename maintenance/hosting product</div>
+      <div class="plan-item"><span class="plan-arrow">→</span>update comparison right column with specific timelines</div>
+    </div>
+    <div class="plan-cell">
+      <div class="plan-num">wave 2 — next iteration</div>
+      <div class="plan-title">brand system</div>
+      <div class="plan-item"><span class="plan-arrow">→</span>remove all product section icons</div>
+      <div class="plan-item"><span class="plan-arrow">→</span>replace with 01/02/03/04 in courier orange</div>
+      <div class="plan-item"><span class="plan-arrow">→</span>number all sections consistently</div>
+      <div class="plan-item"><span class="plan-arrow">→</span>standardise mono vs sans usage in labels</div>
+      <div class="plan-item"><span class="plan-arrow">→</span>add terminal block to hero right side</div>
+      <div class="plan-item"><span class="plan-arrow">→</span>80px section padding across the board</div>
+    </div>
+    <div class="plan-cell">
+      <div class="plan-num">wave 3 — polish pass</div>
+      <div class="plan-title">copy + detail</div>
+      <div class="plan-item"><span class="plan-arrow">→</span>add delivery time as first pricing spec</div>
+      <div class="plan-item"><span class="plan-arrow">→</span>replace trust bar logos with real clients or remove</div>
+      <div class="plan-item"><span class="plan-arrow">→</span>update form CTA to "start the intake →"</div>
+      <div class="plan-item"><span class="plan-arrow">→</span>darken or remove circle behind helix in hero</div>
+      <div class="plan-item"><span class="plan-arrow">→</span>expand footer to 160px+ with brand line</div>
+      <div class="plan-item"><span class="plan-arrow">→</span>add "we use ai to move faster, not to think less."</div>
+    </div>
+  </div>
+</div>
+
+<div style="background:var(--ink);padding:20px 40px;display:flex;justify-content:space-between;align-items:center;">
+  <div style="font-family:var(--mono);font-size:9px;color:#444;">HEL-AUDIT-001 · rev 2026.04 · benchmarks: fly.io · railway · teenage engineering · anthropic · replit</div>
+  <div style="font-family:var(--mono);font-size:9px;color:#333;">18 issues · 3 critical · 5 medium · 3 low · 7 wins</div>
+</div>
+
+</div>

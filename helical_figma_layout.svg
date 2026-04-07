@@ -1,0 +1,43 @@
+<svg width="1440" height="1600" viewBox="0 0 1440 1600" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1440" height="1600" fill="#F7F7FA"/>
+
+  <!-- Header -->
+  <text x="80" y="120" font-family="Arial" font-size="48" font-weight="700" fill="#0B0F1A">HELICAL</text>
+  <text x="80" y="150" font-family="Arial" font-size="18" fill="#6B7280">Iconic System Brand</text>
+
+  <!-- Logo Placeholder -->
+  <g transform="translate(80,200)">
+    <rect width="200" height="200" rx="20" fill="#0B0F1A"/>
+  </g>
+
+  <!-- Logo Cards -->
+  <rect x="760" y="200" width="280" height="180" rx="12" fill="#FFFFFF" stroke="#E5E7EB"/>
+  <rect x="760" y="400" width="280" height="180" rx="12" fill="#0B0F1A"/>
+
+  <!-- Typography -->
+  <text x="80" y="650" font-family="Arial" font-size="28" font-weight="600" fill="#0B0F1A">Typography</text>
+  <text x="80" y="690" font-family="Arial" font-size="16" fill="#0B0F1A">AI systems designed for human clarity</text>
+
+  <!-- Color Chips -->
+  <rect x="760" y="620" width="120" height="80" rx="8" fill="#F7F7FA" stroke="#E5E7EB"/>
+  <rect x="900" y="620" width="120" height="80" rx="8" fill="#0B0F1A"/>
+  <rect x="760" y="720" width="120" height="80" rx="8" fill="#6D5EF3"/>
+  <rect x="900" y="720" width="120" height="80" rx="8" fill="#C43C99"/>
+
+  <!-- Signature Component -->
+  <rect x="80" y="900" width="1280" height="72" rx="12" fill="#FFFFFF" stroke="#E5E7EB"/>
+  <text x="120" y="945" font-family="Arial" font-size="16" fill="#6B7280">Search...</text>
+
+  <!-- CTA angled -->
+  <polygon points="1040,900 1360,900 1360,972 1080,972" fill="url(#grad)"/>
+
+  <defs>
+    <linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#6D5EF3;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#C43C99;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+
+  <text x="1140" y="945" font-family="Arial" font-size="16" fill="#FFFFFF">Get Started</text>
+
+</svg>
