@@ -7,6 +7,19 @@
 <style>
   *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
+  /* Respect prefers-reduced-motion (WCAG 2.3.3): neutralize the terminal-fade reveal, the
+     infinite blinking cursor, the hero fade-up entries, and all transitions for users who ask
+     for reduced motion. Content still renders — fade-up/terminal-fade use animation-fill-mode
+     'both', so at ~0 duration they snap straight to their final visible state. */
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+
   /*
   ═══════════════════════════════════════════════════════════════
   HELICAL DESIGN SYSTEM — v2.0
