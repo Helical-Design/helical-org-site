@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Palette check, by Helical</title>
+<meta name="description" content="Paste your colors and see every text and background pair that fails WCAG AA contrast, by how much, and the nearest shade that passes. Free, runs in your browser.">
+<link rel="icon" href="../favicon.svg" type="image/svg+xml">
+<style>
+@font-face{font-family:'Archivo';font-style:normal;font-display:swap;font-weight:100 900;font-stretch:62% 125%;src:url(../fonts/archivo-latin-wdth-normal.woff2) format('woff2-variations')}
+
+:root{--family:'Archivo',system-ui,sans-serif;--mono:ui-monospace,'SF Mono',Menlo,Consolas,monospace;--body:1rem;--leading:1.55;--gutter:clamp(1.25rem,5vw,4rem);
+--measure:36rem;--display:clamp(2rem,5vw,3.75rem);--display-leading:1.05;--display-tracking:-.01em;--display-weight:600;--display-var:'wdth' 118;
+--lede:clamp(1.0625rem,1.5vw,1.25rem);--lede-leading:1.45;--lede-gap:1.25rem;--h2:.9375rem;--h2-weight:500;--h2-var:'wdth' 82;--h2-gap:1.25rem;
+--hero-top:clamp(1.5rem,5vw,3.5rem);--section-gap:clamp(3rem,8vw,6rem);--row-pad:1.125rem;--button-radius:2px;
+--paper:#F0EDE6;--sunken:#E4E0D8;--ink:#0A0A0A;--quiet:#5C5856;--signal:#D95F0A;--rule:#C8C4BC}
+*,*::before,*::after{box-sizing:border-box}
+html{background:var(--paper);color:var(--ink);-webkit-text-size-adjust:100%}
+body{margin:0;font-family:var(--family);font-size:var(--body);line-height:var(--leading);font-weight:400}
+a{color:inherit;text-decoration-thickness:1px;text-underline-offset:.18em}
+a:focus-visible,button:focus-visible,textarea:focus-visible,input:focus-visible{outline:3px solid var(--ink);outline-offset:3px}
+.top{display:flex;justify-content:space-between;align-items:baseline;padding:var(--gutter) var(--gutter) 0;gap:1em}
+.wordmark{text-decoration:none;font-weight:600;display:inline-flex;align-items:center;gap:.6em}
+.wordmark svg{width:2.6em;height:auto;color:var(--ink)}
+.toplink{color:var(--quiet)}
+main{padding:0 var(--gutter)}
+section{max-width:var(--measure)}
+.hero{padding-top:var(--hero-top)}
+h1{font-size:var(--display);line-height:var(--display-leading);letter-spacing:var(--display-tracking);font-weight:var(--display-weight);margin:0;font-variation-settings:var(--display-var)}
+.lede{font-size:var(--lede);line-height:var(--lede-leading);margin:var(--lede-gap) 0 0}
+h2{font-size:var(--h2);line-height:1.2;font-weight:var(--h2-weight);margin:0 0 var(--h2-gap);font-variation-settings:var(--h2-var);color:var(--quiet)}
+.input,.result,.fixes,.handoff,.about{margin-top:var(--section-gap)}
+.result,.fixes{max-width:none}
+label{display:block;font-weight:500;margin-bottom:.5em}
+.hint{color:var(--quiet);margin:.5em 0 0;font-size:.9375rem}
+textarea{display:block;width:100%;min-height:11em;font:inherit;font-family:var(--mono);font-size:.9375rem;line-height:1.5;color:var(--ink);background:#fff;border:1px solid var(--rule);border-radius:var(--button-radius);padding:.85em 1em;resize:vertical}
+textarea::placeholder{color:var(--quiet)}
+.row{display:flex;flex-wrap:wrap;gap:.75em 1.25em;align-items:center;margin-top:var(--row-pad)}
+button{font:inherit;font-weight:600;cursor:pointer;border-radius:var(--button-radius);padding:.85em 1.4em;border:1px solid var(--ink);background:transparent;color:var(--ink)}
+button.primary{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+button.quiet{border-color:var(--rule);font-weight:500}
+button:hover{filter:brightness(.94)}
+.button{display:inline-block;margin-top:var(--row-pad);background:var(--signal);color:var(--ink);text-decoration:none;font-weight:600;padding:.85em 1.4em;border-radius:var(--button-radius)}
+.button:hover{filter:brightness(.94)}
+.summary{margin:0 0 var(--row-pad);max-width:var(--measure)}
+.summary strong{font-weight:600}
+.scroll{overflow-x:auto;padding-bottom:.5em}
+table{border-collapse:collapse;min-width:100%}
+th,td{text-align:left;vertical-align:top;padding:0;border:0}
+th{font-weight:500;font-size:.875rem;color:var(--quiet);padding:.5em .6em .5em 0;white-space:nowrap}
+thead th{vertical-align:bottom;padding:0 .35em .6em}
+thead th:first-child{padding-left:0}
+tbody th{padding-right:.9em}
+.name{display:block;font-family:var(--mono);font-size:.8125rem;color:var(--ink)}
+.chip{display:inline-block;width:.8em;height:.8em;border:1px solid var(--rule);vertical-align:-.1em;margin-right:.4em}
+td{padding:.35em}
+.cell{display:block;min-width:6.75em;border:1px solid var(--rule);background:var(--paper)}
+.cell .sample{display:block;padding:.65em .7em .55em;font-size:1.375rem;line-height:1;font-weight:500}
+.cell .ratio{display:block;padding:.4em .7em .45em;font-family:var(--mono);font-size:.8125rem;line-height:1.3;color:var(--ink);border-top:1px solid var(--rule)}
+.cell.same{border-style:dashed;min-height:5.1em;background:transparent}
+.verdict{display:block;font-size:.75rem;color:var(--quiet);font-family:var(--family)}
+.fail{border-color:var(--ink);border-width:2px}
+.fail .verdict{color:var(--ink);font-weight:600}
+.legend{color:var(--quiet);font-size:.9375rem;margin:var(--row-pad) 0 0;max-width:var(--measure)}
+ul{list-style:none;margin:0;padding:0;max-width:var(--measure)}
+li{padding:var(--row-pad) 0;border-top:1px solid var(--rule)}
+li:last-child{border-bottom:1px solid var(--rule)}
+.fixes li{display:grid;grid-template-columns:1fr auto;gap:.4em 1.25em;align-items:start}
+.fixes p{margin:0}
+.fixes .swatches{display:flex;gap:.5em}
+.fixes .swatch{display:block;width:3.25em;height:3.25em;border:1px solid var(--rule);font-size:1.125rem;font-weight:500;line-height:3.25em;text-align:center}
+code{font-family:var(--mono);font-size:.9em}
+.problems{color:var(--quiet)}
+.foot{margin-top:var(--section-gap);padding:var(--row-pad) var(--gutter) calc(var(--gutter)*1.5);border-top:1px solid var(--rule);color:var(--quiet);display:flex;flex-wrap:wrap;gap:.5em 3em}
+.foot p{margin:0}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+[hidden]{display:none!important}
+@media (max-width:720px){
+  .foot{flex-direction:column}
+  .fixes li{grid-template-columns:1fr}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+
+<header class="top">
+  <a class="wordmark" href="../"><svg viewBox="0 0 880 248" aria-hidden="true" focusable="false">
+<path d="M-220.0 124.0 A110 110 0 0 1 -5.6 89.5 M5.6 158.5 A110 110 0 0 0 220.0 124.0 M220.0 124.0 A110 110 0 0 1 434.4 89.5 M445.6 158.5 A110 110 0 0 0 660.0 124.0 M660.0 124.0 A110 110 0 0 1 874.4 89.5 M885.6 158.5 A110 110 0 0 0 1100.0 124.0 M1100.0 124.0 A110 110 0 0 1 1314.4 89.5" fill="none" stroke="currentColor" stroke-width="26" stroke-linecap="round"/>
+<path d="M-214.4 158.5 A110 110 0 0 0 0.0 124.0 M0.0 124.0 A110 110 0 0 1 214.4 89.5 M225.6 158.5 A110 110 0 0 0 440.0 124.0 M440.0 124.0 A110 110 0 0 1 654.4 89.5 M665.6 158.5 A110 110 0 0 0 880.0 124.0 M880.0 124.0 A110 110 0 0 1 1094.4 89.5 M1105.6 158.5 A110 110 0 0 0 1320.0 124.0" fill="none" stroke="currentColor" stroke-width="26" stroke-linecap="round"/>
+</svg>Helical</a>
+  <a class="toplink" href="../#start">Start a project</a>
+</header>
+
+<main>
+  <section class="hero">
+    <h1>Palette check</h1>
+    <p class="lede">Paste your colors. See every text and background pair that fails WCAG AA, by how much, and the nearest shade that passes. Nothing leaves your browser.</p>
+  </section>
+
+  <section class="input">
+    <h2>Your colors</h2>
+    <label for="colors">One color per line, with a name if you have one</label>
+    <textarea id="colors" spellcheck="false" autocomplete="off" placeholder="--ink: #0A0A0A
+paper #F0EDE6
+rgb(217, 95, 10)
+oklch(62% 0.2 40)"></textarea>
+    <p class="hint">Hex, rgb, hsl, oklch, named colors, or CSS variables pasted straight from a stylesheet. Up to 24 colors.</p>
+    <div class="row">
+      <button type="button" class="primary" id="check">Check contrast</button>
+      <button type="button" class="quiet" id="example">Use the example palette</button>
+      <button type="button" class="quiet" id="share">Copy a link to this result</button>
+      <span id="shared" class="hint" role="status" aria-live="polite"></span>
+    </div>
+    <p class="problems" id="problems" hidden></p>
+  </section>
+
+  <section class="result" id="result" hidden>
+    <h2>Every pair</h2>
+    <p class="summary" id="summary"></p>
+    <div class="scroll"><table id="matrix"><caption class="sr">Contrast ratio of each text color (rows) on each background color (columns)</caption></table></div>
+    <p class="legend">Rows are the text color, columns are the background. AA for body text needs 4.5 to 1; large text (about 24px, or 19px bold) and interface outlines need 3 to 1; AAA for body text needs 7 to 1. Ratios follow WCAG 2.1. Colors with transparency are checked as if opaque.</p>
+  </section>
+
+  <section class="fixes" id="fixes" hidden>
+    <h2>Failing pairs, and the nearest shade that passes</h2>
+    <ul id="fixlist"></ul>
+    <p class="legend">Each fix keeps the hue and moves only the lightness of one color until the pair reaches 4.5 to 1. It is the smallest honest change, not a redesign. The swatches show the pair as it is, then with each fix.</p>
+  </section>
+
+  <section class="handoff" id="handoff">
+    <h2>Fix the whole system</h2>
+    <p>A patched color is a start. A finished palette has every tone generated to a contrast target, a type scale, and a check in the build so the pairs cannot regress. That is part of every Helical project. Send this palette with your brief and you have a scope and a price by the next day.</p>
+    <a class="button" id="handoffLink" href="../#start">Start a project</a>
+  </section>
+
+  <section class="about">
+    <h2>About this tool</h2>
+    <p>Free, from <a href="../">Helical</a>, a one-person UX studio in Atlanta. The math is the WCAG 2.1 relative-luminance formula, computed here rather than eyeballed. Your colors are never uploaded; a shared link carries them in the address itself.</p>
+  </section>
+</main>
+
+<footer class="foot">
+  <p>We use AI to move faster, not to think less.</p>
+  <p><a href="mailto:brian@helical.design">brian@helical.design</a> · Atlanta</p>
+</footer>
+
+<script>
+(function(){
+'use strict';
+var MAX=24;
+var EXAMPLE='--paper: #F0EDE6\n--sunken: #E4E0D8\n--ink: #0A0A0A\n--quiet: #5C5856\n--signal: #D95F0A\n--rule: #C8C4BC';
+var $=function(id){return document.getElementById(id)};
+var ta=$('colors'),problems=$('problems'),result=$('result'),summary=$('summary'),matrix=$('matrix'),fixes=$('fixes'),fixlist=$('fixlist'),shared=$('shared');
+
+/* ---- color parsing: let the browser do it ---- */
+var canvas=document.createElement('canvas');canvas.width=canvas.height=1;
+var ctx=canvas.getContext('2d',{willReadFrequently:true});
+function toRGB(str){
+  if(window.CSS&&CSS.supports&&!CSS.supports('color',str))return null;
+  ctx.clearRect(0,0,1,1);ctx.fillStyle='#000';ctx.fillStyle=str;
+  ctx.fillRect(0,0,1,1);
+  var d=ctx.getImageData(0,0,1,1).data;
+  var a=d[3]/255;
+  if(a<1&&a>0){ /* un-premultiply against white so the swatch is honest about being composited */
+    ctx.clearRect(0,0,1,1);ctx.fillStyle='#fff';ctx.fillRect(0,0,1,1);ctx.fillStyle=str;ctx.fillRect(0,0,1,1);
+    d=ctx.getImageData(0,0,1,1).data;
+  }
+  if(a===0)return null;
+  return {r:d[0],g:d[1],b:d[2],alpha:a};
+}
+var TOKEN=/#[0-9a-z]+\b|(?:rgba?|hsla?|hwb|lab|lch|oklab|oklch|color)\([^)]*\)|\b[a-z]{3,20}\b/gi;
+var SKIP=/^(?:var|calc|important|none|inherit|initial|unset|transparent|currentcolor|solid|px|rem|em|auto|bold|normal|the|and|text|background|color|border|fill|stroke|font|size|weight|width|height|from|to)$/i;
+function parse(text){
+  var out=[],bad=[],seen={};
+  text.split(/\r?\n|;|,(?![^(]*\))/).forEach(function(line){
+    var raw=line.trim();if(!raw)return;
+    var name=null;
+    var m=raw.match(/^\s*(?:--)?([A-Za-z_][\w-]*)\s*[:=]\s*(.+)$/);
+    var body=raw;
+    if(m){name=m[1];body=m[2]}
+    var toks=body.match(TOKEN)||[],found=false,lastWord=null;
+    toks.forEach(function(t){
+      if(found)return;
+      if(SKIP.test(t))return;
+      var c=toRGB(t.trim());
+      if(!c){ if(/^#|\(/.test(t))bad.push(t); else lastWord=t; return; }
+      found=true;
+      var hex=toHex(c);
+      if(seen[hex]){return}
+      seen[hex]=true;
+      out.push({name:name||lastWord||(/^#|\(/.test(t)?null:t.toLowerCase()),hex:hex,rgb:c,alpha:c.alpha,src:t.trim()});
+    });
+    if(!found&&m)bad.push(raw);
+  });
+  return {colors:out,bad:bad};
+}
+function toHex(c){return '#'+[c.r,c.g,c.b].map(function(v){return ('0'+Math.round(v).toString(16)).slice(-2)}).join('').toUpperCase()}
+
+/* ---- WCAG 2.1 ---- */
+function lin(v){v/=255;return v<=0.04045?v/12.92:Math.pow((v+0.055)/1.055,2.4)}
+function lum(c){return 0.2126*lin(c.r)+0.7152*lin(c.g)+0.0722*lin(c.b)}
+function ratio(a,b){var la=lum(a),lb=lum(b);var hi=Math.max(la,lb),lo=Math.min(la,lb);return (hi+0.05)/(lo+0.05)}
+function fmt(r){return (Math.floor(r*100)/100).toFixed(2)}
+function verdict(r){return r>=7?'AAA':r>=4.5?'AA':r>=3?'AA large only':'fails'}
+
+/* ---- nearest passing shade: move lightness in HSL, keep hue and saturation ---- */
+function rgb2hsl(c){var r=c.r/255,g=c.g/255,b=c.b/255,mx=Math.max(r,g,b),mn=Math.min(r,g,b),h=0,s=0,l=(mx+mn)/2;
+  if(mx!==mn){var d=mx-mn;s=l>0.5?d/(2-mx-mn):d/(mx+mn);
+    h=mx===r?(g-b)/d+(g<b?6:0):mx===g?(b-r)/d+2:(r-g)/d+4;h/=6}
+  return {h:h,s:s,l:l}}
+function hsl2rgb(h){var r,g,b,s=h.s,l=h.l;
+  if(s===0){r=g=b=l}else{var q=l<0.5?l*(1+s):l+s-l*s,p=2*l-q;
+    var f=function(t){t<0&&(t+=1);t>1&&(t-=1);return t<1/6?p+(q-p)*6*t:t<1/2?q:t<2/3?p+(q-p)*(2/3-t)*6:p};
+    r=f(h.h+1/3);g=f(h.h);b=f(h.h-1/3)}
+  return {r:Math.round(r*255),g:Math.round(g*255),b:Math.round(b*255)}}
+function searchL(base,bg,target,dir){
+  var lo=base.l,hi=dir>0?1:0,c=null;
+  if(ratio(hsl2rgb({h:base.h,s:base.s,l:hi}),bg)<target)return null;
+  for(var i=0;i<24;i++){var mid=(lo+hi)/2;var cand=hsl2rgb({h:base.h,s:base.s,l:mid});
+    if(ratio(cand,bg)>=target){c=cand;hi=mid}else{lo=mid}}
+  return c;
+}
+/* Contrast only grows as the text moves away from the background's luminance, so search on the text's own side first
+   (lighter if it is already lighter than the background, darker if darker). Crossing over always finds something darker
+   or lighter than the background, but that is a different color, so it is offered second and labelled as the big move. */
+function nearestPass(text,bg,target){
+  var base=rgb2hsl(text),away=lum(text)>=lum(bg)?1:-1;
+  var c=searchL(base,bg,target,away);
+  if(c)return {rgb:c,cross:false};
+  c=searchL(base,bg,target,-away);
+  return c?{rgb:c,cross:true}:null;
+}
+
+/* ---- render ---- */
+function esc(s){return String(s).replace(/[&<>"']/g,function(ch){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]})}
+function label(c){return c.name?c.name:c.hex}
+function run(){
+  var p=parse(ta.value);
+  var colors=p.colors.slice(0,MAX);
+  var notes=[];
+  if(p.bad.length)notes.push('Not understood as colors: '+p.bad.slice(0,8).map(esc).join(', ')+(p.bad.length>8?' and '+(p.bad.length-8)+' more':'')+'.');
+  if(p.colors.length>MAX)notes.push('Only the first '+MAX+' colors are checked.');
+  var translucent=colors.filter(function(c){return c.alpha<1}).length;
+  if(translucent)notes.push(translucent+(translucent===1?' color has':' colors have')+' transparency; checked as drawn on white.');
+  problems.innerHTML=notes.join(' ');problems.hidden=!notes.length;
+  if(colors.length<2){result.hidden=true;fixes.hidden=true;if(colors.length===1)problems.hidden=false,problems.innerHTML+=' Add a second color to compare.';return colors}
+  var pairs=0,aa=0,large=0,fail=0,aaa=0,failing=[];
+  var html='<thead><tr><th scope="col"><span class="sr">Text color</span></th>';
+  colors.forEach(function(bg){html+='<th scope="col"><span class="chip" style="background:'+bg.hex+'"></span><span class="name">'+esc(label(bg))+'</span></th>'});
+  html+='</tr></thead><tbody>';
+  colors.forEach(function(fg){
+    html+='<tr><th scope="row"><span class="chip" style="background:'+fg.hex+'"></span><span class="name">'+esc(label(fg))+'</span><span class="name">'+fg.hex+'</span></th>';
+    colors.forEach(function(bg){
+      if(bg===fg){html+='<td><span class="cell same" aria-label="same color"></span></td>';return}
+      var r=ratio(fg.rgb,bg.rgb),v=verdict(r);pairs++;
+      if(r>=7)aaa++;if(r>=4.5)aa++;else if(r>=3)large++;else fail++;
+      if(r<4.5)failing.push({fg:fg,bg:bg,r:r});
+      html+='<td><span class="cell'+(r<4.5?' fail':'')+'"><span class="sample" aria-hidden="true" style="background:'+bg.hex+';color:'+fg.hex+'">Aa</span><span class="ratio">'+fmt(r)+'<span class="verdict">'+v+'</span></span></span></td>';
+    });
+    html+='</tr>';
+  });
+  html+='</tbody>';
+  matrix.innerHTML='<caption class="sr">Contrast ratio of each text color (rows) on each background color (columns)</caption>'+html;
+  summary.innerHTML=colors.length+' colors, '+pairs+' pairs. <strong>'+aa+' pass AA for body text.</strong> '+(large?large+' more pass only for large text and outlines. ':'')+(fail?fail+' fail outright. ':'None fail outright. ')+aaa+' reach AAA.';
+  result.hidden=false;
+  if(failing.length){
+    /* one row per unordered pair: the ratio is the same both ways, only the fix differs */
+    var byPair={},order=[];
+    failing.forEach(function(f){var k=[f.fg.hex,f.bg.hex].sort().join('|');if(!byPair[k]){byPair[k]=f;order.push(k)}});
+    order.sort(function(a,b){return byPair[a].r-byPair[b].r});
+    fixlist.innerHTML=order.map(function(k){
+      var f=byPair[k],a=f.fg,b=f.bg;
+      var fixA=nearestPass(a.rgb,b.rgb,4.5),fixB=nearestPass(b.rgb,a.rgb,4.5);
+      var text='<p><code>'+esc(label(a))+'</code> and <code>'+esc(label(b))+'</code> are '+fmt(f.r)+' to 1'+(f.r>=3?', enough for large text only.':'.')+'</p>';
+      var opt=function(c,fix,other){return '<code>'+esc(label(c))+'</code> to <code>'+toHex(fix.rgb)+'</code> ('+fmt(ratio(fix.rgb,other.rgb))+' to 1'+(fix.cross?', a big move past the other color':'')+')'};
+      var opts=[];
+      if(fixA)opts.push(opt(a,fixA,b));
+      if(fixB)opts.push(opt(b,fixB,a));
+      text+=opts.length?'<p>Move '+opts.join(', or ')+'.</p>':'<p>No lightness of either hue passes against the other; one of the two colors has to change hue.</p>';
+      var sw='<span class="swatches" aria-hidden="true"><span class="swatch" style="background:'+b.hex+';color:'+a.hex+'">Aa</span>'+(fixA?'<span class="swatch" style="background:'+b.hex+';color:'+toHex(fixA.rgb)+'">Aa</span>':'')+(fixB?'<span class="swatch" style="background:'+toHex(fixB.rgb)+';color:'+a.hex+'">Aa</span>':'')+'</span>';
+      return '<li><div>'+text+'</div>'+sw+'</li>';
+    }).join('');
+    fixes.hidden=false;
+  }else{fixes.hidden=true}
+  return colors;
+}
+
+/* ---- share: the palette rides in the address, nothing is sent ---- */
+function encode(colors){return '#c='+colors.map(function(c){return (c.name?encodeURIComponent(c.name)+'~':'')+c.hex.slice(1)}).join('.')}
+function decode(hash){
+  var m=/[#&]c=([^&]+)/.exec(hash);if(!m)return null;
+  return m[1].split('.').map(function(part){var i=part.indexOf('~');var name=i>-1?decodeURIComponent(part.slice(0,i)):null,hex=part.slice(i+1);
+    if(!/^[0-9A-Fa-f]{6}$/.test(hex))return null;return (name?'--'+name.replace(/[^\w-]/g,'')+': ':'')+'#'+hex.toUpperCase()}).filter(Boolean).join('\n');
+}
+$('check').addEventListener('click',function(){var c=run();history.replaceState(null,'',c.length>1?encode(c):location.pathname)});
+$('example').addEventListener('click',function(){ta.value=EXAMPLE;$('check').click()});
+$('share').addEventListener('click',function(){
+  var c=run();if(c.length<2){shared.textContent='Add at least two colors first.';return}
+  var url=location.origin+location.pathname+encode(c);history.replaceState(null,'',encode(c));
+  var done=function(){shared.textContent='Link copied.'},fail=function(){shared.textContent=url};
+  if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(url).then(done,fail);else fail();
+});
+ta.addEventListener('keydown',function(e){if((e.metaKey||e.ctrlKey)&&e.key==='Enter')$('check').click()});
+var fromHash=decode(location.hash);
+ta.value=fromHash||EXAMPLE;
+run();
+})();
+</script>
+</body>
+</html>
